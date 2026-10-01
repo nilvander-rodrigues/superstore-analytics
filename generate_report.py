@@ -36,6 +36,10 @@ OUTPUT_DIR = PROJECT_ROOT / "outputs" / "report"
 
 OUTPUT_PATH = OUTPUT_DIR / "superstore_analytics_report.html"
 
+DOCS_DIR = PROJECT_ROOT / "docs"
+
+PAGES_PATH = DOCS_DIR / "index.html"
+
 
 # ---------------------------------------------------------------------
 # Carregamento dos dados
@@ -1063,7 +1067,17 @@ OUTPUT_DIR.mkdir(
     exist_ok=True,
 )
 
+DOCS_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
 OUTPUT_PATH.write_text(
+    rendered_report,
+    encoding="utf-8",
+)
+
+PAGES_PATH.write_text(
     rendered_report,
     encoding="utf-8",
 )
