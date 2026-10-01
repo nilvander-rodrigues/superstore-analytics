@@ -5,6 +5,11 @@ Projeto de análise de dados desenvolvido em **Python e Power BI** a partir de d
 O projeto cobre o período de **2015 a 2018** e combina qualidade e preparação de dados, análise exploratória, métricas de negócio, forecasting de séries temporais, visualização executiva em Power BI e geração programática de um relatório analítico em HTML.
 
 ---
+## 📊 Relatório Analítico
+
+Explore o relatório completo com os principais resultados do projeto, incluindo performance de vendas, análise de clientes e produtos, logística e forecasting.
+
+👉 **[Abrir Relatório Analítico](https://nilvander-rodrigues.github.io/superstore-analytics/)**
 
 ## Visão Geral
 
