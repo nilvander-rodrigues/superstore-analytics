@@ -374,7 +374,7 @@ As versões exatas das dependências Python estão registradas em `requirements.
 ### 1. Clonar o repositório
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone <https://github.com/nilvander-rodrigues/superstore-analytics.git>
 cd superstore-analytics
 ```
 
