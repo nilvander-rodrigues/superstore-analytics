@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="darkreader-lock">
+
+    <title>Superstore Analytics | Analytical Report</title>
+
+    <style>
+        :root {
+            color-scheme: light;
+            --background: #f5f7fa;
+            --surface: #ffffff;
+            --text-primary: #172033;
+            --text-secondary: #667085;
+            --border: #e4e7ec;
+            --accent: #2563eb;
+            --accent-soft: #eff6ff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: min(1180px, 92%);
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 56px 0 44px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 8px 0 8px;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-content {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 14px 0;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        main {
+            padding: 24px 0 64px;
+        }
+
+        section {
+            margin-top: 32px;
+            padding: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            scroll-margin-top: 80px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 1.55rem;
+        }
+
+        .section-description {
+            margin-top: 0;
+            color: var(--text-secondary);
+        }
+
+        /* ---------------------------------------------------------
+           KPI Cards
+           --------------------------------------------------------- */
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .kpi-grid-three {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .kpi-card {
+            padding: 22px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .kpi-value {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .kpi-label {
+            margin: 7px 0 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ---------------------------------------------------------
+           Gráficos
+           --------------------------------------------------------- */
+
+        .chart-container {
+            margin-top: 28px;
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chart-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* ---------------------------------------------------------
+           Tabelas
+           --------------------------------------------------------- */
+
+        .table-container {
+            margin-top: 24px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+        }
+
+        thead {
+            background: var(--accent-soft);
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        th {
+            color: var(--text-primary);
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        td {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--background);
+        }
+
+        /* ---------------------------------------------------------
+           Insights
+           --------------------------------------------------------- */
+
+        .insight-card {
+            margin-top: 24px;
+            padding: 20px 22px;
+            background: var(--accent-soft);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+        }
+
+        .insight-title {
+            margin-bottom: 6px;
+            color: var(--accent);
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .insight-card p {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        .insight-card p + p {
+            margin-top: 12px;
+        }
+
+        /* ---------------------------------------------------------
+           Footer
+           --------------------------------------------------------- */
+
+        footer {
+            padding: 32px 0 48px;
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        /* ---------------------------------------------------------
+           Responsividade
+           --------------------------------------------------------- */
+
+        @media (max-width: 900px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kpi-grid-three {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            section {
+                padding: 22px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                padding: 12px;
+            }
+
+            th,
+            td {
+                padding: 12px;
+            }
+
+            .insight-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <div class="eyebrow">Analytical Report</div>
+
+        <h1>Superstore Analytics</h1>
+
+        <p class="subtitle">
+            Sales · Customers · Products · Logistics · Forecasting
+        </p>
+    </div>
+</header>
+
+<nav>
+    <div class="container nav-content">
+        <a href="#overview">Visão Executiva</a>
+        <a href="#sales">Vendas</a>
+        <a href="#customers">Clientes</a>
+        <a href="#products">Produtos</a>
+        <a href="#logistics">Logística</a>
+        <a href="#forecasting">Forecasting</a>
+        <a href="#conclusions">Conclusões</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <!-- =========================================================
+         1. VISÃO EXECUTIVA
+         ========================================================= -->
+
+    <section id="overview">
+        <h2>1. Visão Executiva</h2>
+
+        <p class="section-description">
+            Principais indicadores e contexto geral da operação analisada.
+        </p>
+
+        <div class="kpi-grid">
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ total_revenue }}</p>
+                <p class="kpi-label">Receita Total</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ total_orders }}</p>
+                <p class="kpi-label">Pedidos</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ total_customers }}</p>
+                <p class="kpi-label">Clientes</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ average_order_value }}</p>
+                <p class="kpi-label">Ticket Médio</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =========================================================
+         2. PERFORMANCE DE VENDAS
+         ========================================================= -->
+
+    <section id="sales">
+        <h2>2. Performance de Vendas</h2>
+
+        <p class="section-description">
+            Evolução da receita e principais fatores associados ao crescimento.
+        </p>
+
+        <div class="chart-container">
+            <img
+                src="data:image/png;base64,{{ annual_revenue_chart }}"
+                alt="Evolução anual da receita entre 2015 e 2018"
+            >
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ano</th>
+                        <th>Receita</th>
+                        <th>Pedidos</th>
+                        <th>Ticket Médio</th>
+                        <th>YoY Receita</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in annual_sales_table %}
+                    <tr>
+                        <td>{{ row.year }}</td>
+                        <td>{{ row.revenue }}</td>
+                        <td>{{ row.orders }}</td>
+                        <td>{{ row.average_order_value }}</td>
+                        <td>{{ row.revenue_yoy }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Insight Analítico</div>
+
+            <p>
+                Após uma retração de 4,20% em 2016, a receita avançou
+                30,64% em 2017 e 20,30% em 2018. A decomposição do
+                crescimento indica que o aumento do volume de pedidos
+                foi o principal motor dessa expansão. Em 2018, a receita
+                atingiu $722,052.02 mesmo com a redução do ticket médio
+                para $434.71, reforçando a importância do crescimento
+                do volume no resultado anual.
+            </p>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         3. CLIENTES
+         ========================================================= -->
+
+    <section id="customers">
+        <h2>3. Clientes</h2>
+
+        <p class="section-description">
+            Valor econômico, frequência de compra e concentração da receita.
+        </p>
+
+        <div class="kpi-grid-three">
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ customer_total }}</p>
+                <p class="kpi-label">Clientes Analisados</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ customer_top_10_share }}</p>
+                <p class="kpi-label">Receita concentrada no Top 10%</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ customer_top_20_share }}</p>
+                <p class="kpi-label">Receita concentrada no Top 20%</p>
+            </div>
+
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Perfil Econômico</th>
+                        <th>Clientes</th>
+                        <th>% Clientes</th>
+                        <th>Receita</th>
+                        <th>% Receita</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in customer_profiles_table %}
+                    <tr>
+                        <td>{{ row.profile }}</td>
+                        <td>{{ row.customers }}</td>
+                        <td>{{ row.customer_share }}</td>
+                        <td>{{ row.revenue }}</td>
+                        <td>{{ row.revenue_share }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Insight Analítico</div>
+
+            <p>
+                Os perfis de alto ticket representam
+                {{ high_ticket_customer_share }} da base de clientes,
+                mas concentram {{ high_ticket_revenue_share }} da receita.
+                O grupo de Alta Frequência · Alto Ticket apresenta o maior
+                impacto econômico individualmente, respondendo por 54,29%
+                da receita total. O resultado indica que o valor gerado pelo
+                cliente depende não apenas da frequência de compra, mas
+                também do valor econômico dos pedidos realizados.
+            </p>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         4. PRODUTOS
+         ========================================================= -->
+
+    <section id="products">
+        <h2>4. Produtos</h2>
+
+        <p class="section-description">
+            Produtos de maior impacto e concentração da receita do portfólio.
+        </p>
+
+        <div class="kpi-grid-three">
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ product_total }}</p>
+                <p class="kpi-label">Combinações Analíticas de Produtos</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ product_top_10_share }}</p>
+                <p class="kpi-label">Receita concentrada no Top 10%</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ product_top_20_share }}</p>
+                <p class="kpi-label">Receita concentrada no Top 20%</p>
+            </div>
+
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Pedidos</th>
+                        <th>Receita</th>
+                        <th>% Receita</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in top_products_table %}
+                    <tr>
+                        <td>{{ row.product_name }}</td>
+                        <td>{{ row.orders }}</td>
+                        <td>{{ row.revenue }}</td>
+                        <td>{{ row.revenue_share }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Insight Analítico</div>
+
+            <p>
+                A receita apresenta forte concentração no portfólio:
+                os 10% de produtos com maior faturamento respondem por
+                {{ product_top_10_share }} da receita total, enquanto os
+                20% superiores concentram {{ product_top_20_share }}.
+                O produto líder, Canon imageCLASS 2200 Advanced Copier,
+                sozinho representa 2,72% da receita, apesar de aparecer
+                em apenas 5 pedidos. O resultado evidencia que uma parcela
+                relativamente pequena do portfólio possui impacto econômico
+                desproporcional sobre o desempenho da operação.
+            </p>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         5. LOGÍSTICA
+         ========================================================= -->
+
+    <section id="logistics">
+        <h2>5. Logística</h2>
+
+        <p class="section-description">
+            Tempo entre o registro dos pedidos e o envio por modalidade.
+        </p>
+
+        <div class="kpi-grid-three">
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ shipping_median_days }} dias</p>
+                <p class="kpi-label">Mediana Geral até o Envio</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ upper_processing_share }}</p>
+                <p class="kpi-label">Pedidos na Faixa de 6–7 Dias</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ standard_class_share }}</p>
+                <p class="kpi-label">Pedidos via Standard Class</p>
+            </div>
+
+        </div>
+
+        <div class="chart-container">
+            <img
+                src="data:image/png;base64,{{ shipping_mode_chart }}"
+                alt="Mediana de dias até o envio por modalidade"
+            >
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Modalidade</th>
+                        <th>Pedidos</th>
+                        <th>% Pedidos</th>
+                        <th>Mediana</th>
+                        <th>Média</th>
+                        <th>Intervalo</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in shipping_mode_table %}
+                    <tr>
+                        <td>{{ row.ship_mode }}</td>
+                        <td>{{ row.orders }}</td>
+                        <td>{{ row.order_share }}</td>
+                        <td>{{ row.median_days }} dias</td>
+                        <td>{{ row.mean_days }} dias</td>
+                        <td>{{ row.range }} dias</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Insight Analítico</div>
+
+            <p>
+                O tempo de processamento apresenta uma progressão clara entre
+                as modalidades de envio, com medianas de 0 dia em Same Day,
+                2 dias em First Class, 3 dias em Second Class e 5 dias em
+                Standard Class. Esta última concentra {{ standard_class_share }}
+                dos pedidos e, portanto, exerce maior influência sobre o perfil
+                logístico agregado. Além disso, {{ upper_processing_share }}
+                dos pedidos encontram-se na faixa superior observada de
+                6 a 7 dias.
+            </p>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         6. FORECASTING
+         ========================================================= -->
+
+    <section id="forecasting">
+        <h2>6. Forecasting</h2>
+
+        <p class="section-description">
+            Avaliação do modelo de previsão e projeção mensal da receita para 2019.
+        </p>
+
+        <div class="kpi-grid-three">
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ forecast_mape }}</p>
+                <p class="kpi-label">MAPE · Holt-Winters</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ forecast_rmse_reduction }}</p>
+                <p class="kpi-label">Redução do RMSE vs. Baseline</p>
+            </div>
+
+            <div class="kpi-card">
+                <p class="kpi-value">{{ forecast_2019_total }}</p>
+                <p class="kpi-label">Receita Projetada · 2019</p>
+            </div>
+
+        </div>
+
+        <div class="chart-container">
+            <img
+                src="data:image/png;base64,{{ forecast_chart }}"
+                alt="Receita histórica e forecast de receita para 2019"
+            >
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Período</th>
+                        <th>Receita Projetada</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in forecast_table %}
+                    <tr>
+                        <td>{{ row.month }}</td>
+                        <td>{{ row.forecast }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Insight Analítico</div>
+
+            <p>
+                O modelo Holt-Winters superou o baseline sazonal no período
+                de teste, reduzindo o MAE em {{ forecast_mae_reduction }} e o
+                RMSE em {{ forecast_rmse_reduction }}. O MAPE passou de
+                {{ baseline_mape }} no baseline para {{ forecast_mape }} no
+                modelo final avaliado. Aplicado posteriormente sobre toda a
+                série histórica, o modelo projeta receita de
+                {{ forecast_2019_total }} para 2019.
+            </p>
+
+            <p>
+                A projeção deve ser interpretada como uma referência analítica,
+                e não como resultado garantido. A série disponível contém apenas
+                48 observações mensais, o que limita a quantidade de ciclos
+                sazonais disponíveis para estimação e validação.
+            </p>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         7. CONCLUSÕES
+         ========================================================= -->
+
+    <section id="conclusions">
+        <h2>7. Conclusões e Limitações</h2>
+
+        <p class="section-description">
+            Síntese dos principais resultados e limites de interpretação da análise.
+        </p>
+
+        <div class="insight-card">
+            <div class="insight-title">Conclusões</div>
+
+            <p>
+                A análise evidencia uma operação em expansão, com crescimento
+                relevante da receita nos dois últimos anos observados e forte
+                contribuição do aumento do volume de pedidos. Ao mesmo tempo,
+                clientes e produtos apresentam concentração econômica importante,
+                indicando que uma parcela relativamente pequena da base exerce
+                impacto desproporcional sobre a receita.
+            </p>
+
+            <p>
+                Na dimensão logística, as modalidades de envio apresentam
+                comportamentos distintos de tempo de processamento, com maior
+                participação do Standard Class. Na dimensão temporal, o modelo
+                Holt-Winters apresentou desempenho superior ao baseline sazonal
+                no período de teste e forneceu uma referência quantitativa para
+                a projeção de 2019.
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Limitações</div>
+
+            <p>
+                O dataset não contém informações de custos, margem ou lucro,
+                impedindo uma avaliação de rentabilidade. Também não existem
+                dados de SLA ou prazo prometido de entrega, portanto os tempos
+                logísticos observados não devem ser interpretados diretamente
+                como atrasos.
+            </p>
+
+            <p>
+                A série temporal possui apenas 48 observações mensais, equivalentes
+                a quatro anos de histórico. Por esse motivo, o forecasting deve
+                ser interpretado como uma referência analítica baseada no padrão
+                histórico disponível, e não como garantia de desempenho futuro.
+            </p>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        Superstore Analytics · Python Analytical Project
+    </div>
+</footer>
+
+</body>
+</html>
